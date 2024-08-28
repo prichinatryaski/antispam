@@ -1,0 +1,4 @@
+pyTelegramBotAPI==4.22.1
+torch==2.2.0
+transformers==4.41.2
+uvloop==0.20.0
