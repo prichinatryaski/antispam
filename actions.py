@@ -4,6 +4,7 @@ import datetime
 async def actions(message, bot):
     SETTINGS = configparser.ConfigParser()
     SETTINGS.read('preferences.ini')
+    await logger(message, bot, SETTINGS)
     if SETTINGS['delete'] == 'True':
         await bot.delete_message(message.chat.id, message.id)
     #elif SETTINGS['message_action'] == 'vote':
@@ -25,4 +26,11 @@ async def actions(message, bot):
     else:
         None
     
-       
+async def logger(message, bot, SETTINGS):
+    if SETTINGS['logs'] == True:
+        await bot.send_message(SETTINGS['log_channel_id'] if SETTINGS['log_channel_id'] != 'default' else message.chat.id, 
+                               f'''
+                               Обнаружен спам от пользователя {message.from_user.first_name} (<@{message.from_user.id}>)  
+                               ''')
+    else:
+        None
