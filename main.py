@@ -2,11 +2,12 @@ import platform
 import asyncio
 import sys
 from telebot.async_telebot import AsyncTeleBot
-import threading
+from concurrent.futures import ThreadPoolExecutor
 from model import Model
 from actions import actions
 
 os_name = platform.system()
+executor = ThreadPoolExecutor(max_workers=10)
 
 if os_name in ('Linux', 'Darwin'):
     try:
@@ -26,7 +27,9 @@ model = Model('RUSpam/spamNS_v1')
 
 @bot.message_handler(func=lambda message: True)
 async def detect_spam(message):
-    if await model.check(message.text) > 0.5:
+    loop = asyncio.get_event_loop()
+    spam_score = await loop.run_in_executor(executor, model.check, message.text)
+    if spam_score > 0.5:
         await actions(message, bot)
             
 if __name__ == '__main__':
