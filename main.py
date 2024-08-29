@@ -28,9 +28,6 @@ model = Model('RUSpam/spamNS_v1')
 async def detect_spam(message):
     if await model.check(message.text) > 0.5:
         await actions(message, bot)
-        
-@bot.message_handler(commands=['preference'], is_chat_admin=True, chat_types=['group', 'supergroup']):
-    
             
 if __name__ == '__main__':
     try:
